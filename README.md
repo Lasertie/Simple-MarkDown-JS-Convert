@@ -30,8 +30,25 @@ Ce projet est un simple rendu de fichiers Markdown en HTML à l'aide de JavaScri
 .markdown h1 {
     font-size: 100px;
     color: purple;
-    
 }
+```
+
+### Méthode distante
+1. Incluez le script dans votre page (a partir de github)
+```javascript
+    <script type="text/javascript" src="https://raw.githubusercontent.com/Lasertie/Simple-MarkDown-JS-Convert/refs/heads/master/main.js"></script>  
+```
+2. Ajoutez une `div` avec md="chemin/vers/votre/fichier.md" là où vous voullez mettre votre markdown
+```html
+<div class="markdown" md="chemin/vers/votre/fichier.md"></div>
+```
+3. (Optionel) Personnalisez avec cotre css.
+```css
+.markdown h1 {  
+    font-size: 100px;
+    color: purple;
+}
+```
 
 ## Contributions
 
