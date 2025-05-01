@@ -21,6 +21,17 @@ Ce projet est un simple rendu de fichiers Markdown en HTML à l'aide de JavaScri
 ```javascript
     <script type="text/javascript" src="SimpleMarkDownConvert/main.js"></script>  
 ```
+3. Ajoutez une `div` avec md="chemin/vers/votre/fichier.md" là où vous voullez mettre votre markdown
+```html
+<div class="markdown" md="chemin/vers/votre/fichier.md"></div>
+```
+4. (Optionel) Personnalisez avec cotre css.
+```css
+.markdown h1 {
+    font-size: 100px;
+    color: purple;
+    
+}
 
 ## Contributions
 
@@ -28,4 +39,4 @@ Les contributions sont les bienvenues ! N'hésitez pas à ouvrir une issue ou à
 
 ## Licence
 
-Ce projet est sous licence LOC. Voir le fichier [LICENSE](LICENSE) pour plus de détails. Ou loc.zyglonk.fr
+Ce projet est sous licence LOC. Voir le fichier [LICENSE](LICENSE) pour plus de détails. Ou [loc.zyglonk.fr](https://loc.zyglonk.fr)
