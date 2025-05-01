@@ -56,7 +56,7 @@ git clone https://github.com/Lasertie/Simple-MarkDown-JS-Convert.git
 
 ## Contributions
 
-Les contributions sont les bienvenues ! N'hésitez pas à ouvrir une issue ou à soumettre une pull request pour améliorer ce projet.
+Que ce soit une amélioration pour le js ou un nouveau thème (css), les contributions sont les bienvenues ! N'hésitez pas à ouvrir une issue ou à soumettre une pull request pour améliorer ce projet.
 
 ## Licence
 
