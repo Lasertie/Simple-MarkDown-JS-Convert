@@ -59,4 +59,9 @@ function parseInlineMarkdown(text) {
     text = text.replace(/~~(.+?)~~/g, '<del>$1</del>');
     return text;
 }
-    
+
+////////////////////////////
+//////// Mistral IA ////////
+////////////////////////////
+///// Lasertie Zyglonk /////
+////////////////////////////
