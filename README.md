@@ -12,7 +12,7 @@ Ce projet est un simple rendu de fichiers Markdown en HTML à l'aide de JavaScri
   - Barré (`~~texte~~`)
 
 ## Utilisation
-
+            
 ### Méthode local
 1. Clonnez ce projet dans votre site.
 ```bash
