@@ -60,4 +60,4 @@ Que ce soit une amélioration pour le js ou un nouveau thème (css), les contrib
 
 ## Licence
 
-Ce projet est sous licence LOC. Voir le fichier [LICENSE](LICENSE) pour plus de détails. Ou [loc.zyglonk.fr](https://loc.zyglonk.fr)
+Ce projet est sous licence LOC. Voir le fichier [LICENSE](LICENSE) ou [loc.zyglonk.fr](https://loc.zyglonk.fr) pour plus de détails.
