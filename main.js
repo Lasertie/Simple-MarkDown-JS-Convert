@@ -49,6 +49,8 @@ function convertMarkdownToHtml(markdown) {
 }
 
 function parseInlineMarkdown(text) {
+    // Replace links ([text](url))
+    text = text.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2">$1</a>');
     // Replace bold (**text**)
     text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
     // Replace italic (*text*)
