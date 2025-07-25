@@ -23,7 +23,7 @@ git clone https://github.com/Lasertie/Simple-MarkDown-JS-Convert.git
 ```
 2. Incluez le script dans votre page
 ```javascript
-<script type="text/javascript" src="SimpleMarkDownConvert/main.js"></script>  
+<script type="text/javascript" src="Simple-MarkDown-JS-Convert/main.js"></script>  
 ```
 3. Ajoutez une `div` avec md="chemin/vers/votre/fichier.md" là où vous voullez mettre votre markdown
 ```html
