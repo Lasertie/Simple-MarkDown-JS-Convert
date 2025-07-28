@@ -20,131 +20,76 @@ function convertMarkdownToHtml(markdown) {
     // Split the markdown content into lines
     const lines = markdown.split('\n');
     let html = '';
-    let inUnorderedList = false;
-    let inOrderedList = false;
+    let listStack = []; // Stack to keep track of nested lists
 
     lines.forEach(line => {
-        if (line.startsWith('# ')) {
-            // Close any open lists
-            if (inUnorderedList) {
-                html += '</ul>';
-                inUnorderedList = false;
+        const unorderedListMatch = line.match(/^(\s*)[-*]\s+(.*)/);
+        const orderedListMatch = line.match(/^(\s*)\d+\.\s+(.*)/);
+
+        if (unorderedListMatch) {
+            const indent = unorderedListMatch[1].length;
+            const content = unorderedListMatch[2];
+
+            // Close lists that are deeper than the current indent
+            while (listStack.length > indent) {
+                html += '</' + listStack.pop() + '>';
             }
-            if (inOrderedList) {
-                html += '</ol>';
-                inOrderedList = false;
-            }
-            html += `<h1 class="md-h1">${parseInlineMarkdown(line.substring(2))}</h1>`;
-        } else if (line.startsWith('## ')) {
-            // Close any open lists
-            if (inUnorderedList) {
-                html += '</ul>';
-                inUnorderedList = false;
-            }
-            if (inOrderedList) {
-                html += '</ol>';
-                inOrderedList = false;
-            }
-            html += `<h2 class="md-h2">${parseInlineMarkdown(line.substring(3))}</h2>`;
-        } else if (line.startsWith('### ')) {
-            // Close any open lists
-            if (inUnorderedList) {
-                html += '</ul>';
-                inUnorderedList = false;
-            }
-            if (inOrderedList) {
-                html += '</ol>';
-                inOrderedList = false;
-            }
-            html += `<h3 class="md-h3">${parseInlineMarkdown(line.substring(4))}</h3>`;
-        } else if (line.startsWith('#### ')) {
-            // Close any open lists
-            if (inUnorderedList) {
-                html += '</ul>';
-                inUnorderedList = false;
-            }
-            if (inOrderedList) {
-                html += '</ol>';
-                inOrderedList = false;
-            }
-            html += `<h4 class="md-h4">${parseInlineMarkdown(line.substring(5))}</h4>`;
-        } else if (line.startsWith('##### ')) {
-            // Close any open lists
-            if (inUnorderedList) {
-                html += '</ul>';
-                inUnorderedList = false;
-            }
-            if (inOrderedList) {
-                html += '</ol>';
-                inOrderedList = false;
-            }
-            html += `<h5 class="md-h5">${parseInlineMarkdown(line.substring(6))}</h5>`;
-        } else if (line.startsWith('###### ')) {
-            // Close any open lists
-            if (inUnorderedList) {
-                html += '</ul>';
-                inUnorderedList = false;
-            }
-            if (inOrderedList) {
-                html += '</ol>';
-                inOrderedList = false;
-            }
-            html += `<h6 class="md-h6">${parseInlineMarkdown(line.substring(7))}</h6>`;
-        } else if (line.startsWith('> ')) {
-            // Close any open lists
-            if (inUnorderedList) {
-                html += '</ul>';
-                inUnorderedList = false;
-            }
-            if (inOrderedList) {
-                html += '</ol>';
-                inOrderedList = false;
-            }
-            html += `<blockquote class="md-blockquote">${parseInlineMarkdown(line.substring(2))}</blockquote>`;
-        } else if (line.startsWith('- ') || line.startsWith('* ')) {
-            if (!inUnorderedList) {
-                // Start a new unordered list
+
+            // Open new lists if the current indent is deeper than the stack
+            while (listStack.length < indent) {
                 html += '<ul class="md-ul">';
-                inUnorderedList = true;
-                // Close any open ordered list
-                if (inOrderedList) {
-                    html += '</ol>';
-                    inOrderedList = false;
-                }
+                listStack.push('ul');
             }
-            html += `<li>${parseInlineMarkdown(line.substring(2))}</li>`;
-        } else if (line.match(/^\d+\. /)) {
-            if (!inOrderedList) {
-                // Start a new ordered list
+
+            // Add the list item
+            html += `<li>${parseInlineMarkdown(content)}</li>`;
+        } else if (orderedListMatch) {
+            const indent = orderedListMatch[1].length;
+            const content = orderedListMatch[2];
+
+            // Close lists that are deeper than the current indent
+            while (listStack.length > indent) {
+                html += '</' + listStack.pop() + '>';
+            }
+
+            // Open new lists if the current indent is deeper than the stack
+            while (listStack.length < indent) {
                 html += '<ol class="md-ol">';
-                inOrderedList = true;
-                // Close any open unordered list
-                if (inUnorderedList) {
-                    html += '</ul>';
-                    inUnorderedList = false;
-                }
+                listStack.push('ol');
             }
-            html += `<li>${parseInlineMarkdown(line.substring(line.indexOf('. ') + 2))}</li>`;
+
+            // Add the list item
+            html += `<li>${parseInlineMarkdown(content)}</li>`;
         } else {
-            // Close any open lists
-            if (inUnorderedList) {
-                html += '</ul>';
-                inUnorderedList = false;
+            // Close all open lists if the line is not a list item
+            while (listStack.length > 0) {
+                html += '</' + listStack.pop() + '>';
             }
-            if (inOrderedList) {
-                html += '</ol>';
-                inOrderedList = false;
+
+            // Handle other Markdown elements
+            if (line.startsWith('# ')) {
+                html += `<h1 class="md-h1">${parseInlineMarkdown(line.substring(2))}</h1>`;
+            } else if (line.startsWith('## ')) {
+                html += `<h2 class="md-h2">${parseInlineMarkdown(line.substring(3))}</h2>`;
+            } else if (line.startsWith('### ')) {
+                html += `<h3 class="md-h3">${parseInlineMarkdown(line.substring(4))}</h3>`;
+            } else if (line.startsWith('#### ')) {
+                html += `<h4 class="md-h4">${parseInlineMarkdown(line.substring(5))}</h4>`;
+            } else if (line.startsWith('##### ')) {
+                html += `<h5 class="md-h5">${parseInlineMarkdown(line.substring(6))}</h5>`;
+            } else if (line.startsWith('###### ')) {
+                html += `<h6 class="md-h6">${parseInlineMarkdown(line.substring(7))}</h6>`;
+            } else if (line.startsWith('> ')) {
+                html += `<blockquote class="md-blockquote">${parseInlineMarkdown(line.substring(2))}</blockquote>`;
+            } else {
+                html += `<p class="md-p">${parseInlineMarkdown(line)}</p>`;
             }
-            html += `<p class="md-p">${parseInlineMarkdown(line)}</p>`;
         }
     });
 
     // Close any remaining open lists
-    if (inUnorderedList) {
-        html += '</ul>';
-    }
-    if (inOrderedList) {
-        html += '</ol>';
+    while (listStack.length > 0) {
+        html += '</' + listStack.pop() + '>';
     }
 
     return html;
