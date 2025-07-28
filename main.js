@@ -2,13 +2,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const markdownDiv = document.querySelector('div[md]');
     if (markdownDiv) {
         const markdownFile = markdownDiv.getAttribute('md');
+        const indentSize = parseInt(markdownDiv.getAttribute('indent')) || 4; // Default indent size is 4 spaces
 
         // Fetch the Markdown file
         fetch(markdownFile)
             .then(response => response.text())
             .then(markdownText => {
                 // Convert Markdown to HTML
-                const htmlContent = convertMarkdownToHtml(markdownText);
+                const htmlContent = convertMarkdownToHtml(markdownText, indentSize);
                 // Insert the HTML content into the div
                 markdownDiv.innerHTML = htmlContent;
             })
@@ -16,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-function convertMarkdownToHtml(markdown) {
+function convertMarkdownToHtml(markdown, indentSize) {
     // Split the markdown content into lines
     const lines = markdown.split('\n');
     let html = '';
@@ -31,12 +32,12 @@ function convertMarkdownToHtml(markdown) {
             const content = unorderedListMatch[2];
 
             // Close lists that are deeper than the current indent
-            while (listStack.length > indent) {
+            while (listStack.length > indent / indentSize) {
                 html += '</' + listStack.pop() + '>';
             }
 
             // Open new lists if the current indent is deeper than the stack
-            while (listStack.length < indent) {
+            while (listStack.length < indent / indentSize) {
                 html += '<ul class="md-ul">';
                 listStack.push('ul');
             }
@@ -48,12 +49,12 @@ function convertMarkdownToHtml(markdown) {
             const content = orderedListMatch[2];
 
             // Close lists that are deeper than the current indent
-            while (listStack.length > indent) {
+            while (listStack.length > indent / indentSize) {
                 html += '</' + listStack.pop() + '>';
             }
 
             // Open new lists if the current indent is deeper than the stack
-            while (listStack.length < indent) {
+            while (listStack.length < indent / indentSize) {
                 html += '<ol class="md-ol">';
                 listStack.push('ol');
             }
