@@ -40,6 +40,18 @@
                 html += `<ul class="md-ul"><li>${parseInlineMarkdown(line.substring(2))}</li></ul>`;
             } else if (line.startsWith('1. ')) {
                 html += `<ol class="md-ol"><li>${parseInlineMarkdown(line.substring(3))}</li></ol>`;
+            } else if (line.startsWith('2. ')) {
+                html += `<ol class="md-ol"><li>${parseInlineMarkdown(line.substring(3))}</li></ol>`;
+            } else if (line.startsWith('3. ')) {
+                html += `<ol class="md-ol"><li>${parseInlineMarkdown(line.substring(3))}</li></ol>`;
+            } else if (line.startsWith('4. ')) {
+                html += `<ol class="md-ol"><li>${parseInlineMarkdown(line.substring(3))}</li></ol>`;
+            } else if (line.startsWith('5. ')) {
+                html += `<ol class="md-ol"><li>${parseInlineMarkdown(line.substring(3))}</li></ol>`;
+            } else if (line.startsWith('6. ')) {
+                html += `<ol class="md-ol"><li>${parseInlineMarkdown(line.substring(3))}</li></ol>`;
+            } else if (line.startsWith('7. ')) {
+                html += `<ol class="md-ol"><li>${parseInlineMarkdown(line.substring(3))}</li></ol>`;
             } else {
                 html += `<p class="md-p">${parseInlineMarkdown(line)}</p>`;
             }
