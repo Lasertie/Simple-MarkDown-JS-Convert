@@ -2,13 +2,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const markdownDiv = document.querySelector('div[md]');
     if (markdownDiv) {
         const markdownFile = markdownDiv.getAttribute('md');
+        const indentSize = parseInt(markdownDiv.getAttribute('indent')) || 4; // Default indent size is 4 spaces
 
         // Fetch the Markdown file
         fetch(markdownFile)
             .then(response => response.text())
             .then(markdownText => {
                 // Convert Markdown to HTML
-                const htmlContent = convertMarkdownToHtml(markdownText);
+                const htmlContent = convertMarkdownToHtml(markdownText, indentSize);
                 // Insert the HTML content into the div
                 markdownDiv.innerHTML = htmlContent;
             })
@@ -16,34 +17,81 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-function convertMarkdownToHtml(markdown) {
+function convertMarkdownToHtml(markdown, indentSize) {
     // Split the markdown content into lines
     const lines = markdown.split('\n');
     let html = '';
+    let listStack = []; // Stack to keep track of nested lists
 
     lines.forEach(line => {
-        if (line.startsWith('# ')) {
-            html += `<h1 class="md-h1">${parseInlineMarkdown(line.substring(2))}</h1>`;
-        } else if (line.startsWith('## ')) {
-            html += `<h2 class="md-h2">${parseInlineMarkdown(line.substring(3))}</h2>`;
-        } else if (line.startsWith('### ')) {
-            html += `<h3 class="md-h3">${parseInlineMarkdown(line.substring(4))}</h3>`;
-        } else if (line.startsWith('#### ')) {
-            html += `<h4 class="md-h4">${parseInlineMarkdown(line.substring(5))}</h4>`;
-        } else if (line.startsWith('##### ')) {
-            html += `<h5 class="md-h5">${parseInlineMarkdown(line.substring(6))}</h5>`;
-        } else if (line.startsWith('###### ')) {
-            html += `<h6 class="md-h6">${parseInlineMarkdown(line.substring(7))}</h6>`;
-        } else if (line.startsWith('> ')) {
-            html += `<blockquote class="md-blockquote">${parseInlineMarkdown(line.substring(2))}</blockquote>`;
-        } else if (line.startsWith('- ') || line.startsWith('* ')) {
-            html += `<ul class="md-ul"><li>${parseInlineMarkdown(line.substring(2))}</li></ul>`;
-        } else if (line.startsWith('1. ')) {
-            html += `<ol class="md-ol"><li>${parseInlineMarkdown(line.substring(3))}</li></ol>`;
+        const unorderedListMatch = line.match(/^(\s*)[-*]\s+(.*)/);
+        const orderedListMatch = line.match(/^(\s*)\d+\.\s+(.*)/);
+
+        if (unorderedListMatch) {
+            const indent = unorderedListMatch[1].length;
+            const content = unorderedListMatch[2];
+
+            // Close lists that are deeper than the current indent
+            while (listStack.length > indent / indentSize) {
+                html += '</' + listStack.pop() + '>';
+            }
+
+            // Open new lists if the current indent is deeper than the stack
+            while (listStack.length < indent / indentSize) {
+                html += '<ul class="md-ul">';
+                listStack.push('ul');
+            }
+
+            // Add the list item
+            html += `<li>${parseInlineMarkdown(content)}</li>`;
+        } else if (orderedListMatch) {
+            const indent = orderedListMatch[1].length;
+            const content = orderedListMatch[2];
+
+            // Close lists that are deeper than the current indent
+            while (listStack.length > indent / indentSize) {
+                html += '</' + listStack.pop() + '>';
+            }
+
+            // Open new lists if the current indent is deeper than the stack
+            while (listStack.length < indent / indentSize) {
+                html += '<ol class="md-ol">';
+                listStack.push('ol');
+            }
+
+            // Add the list item
+            html += `<li>${parseInlineMarkdown(content)}</li>`;
         } else {
-            html += `<p class="md-p">${parseInlineMarkdown(line)}</p>`;
+            // Close all open lists if the line is not a list item
+            while (listStack.length > 0) {
+                html += '</' + listStack.pop() + '>';
+            }
+
+            // Handle other Markdown elements
+            if (line.startsWith('# ')) {
+                html += `<h1 class="md-h1">${parseInlineMarkdown(line.substring(2))}</h1>`;
+            } else if (line.startsWith('## ')) {
+                html += `<h2 class="md-h2">${parseInlineMarkdown(line.substring(3))}</h2>`;
+            } else if (line.startsWith('### ')) {
+                html += `<h3 class="md-h3">${parseInlineMarkdown(line.substring(4))}</h3>`;
+            } else if (line.startsWith('#### ')) {
+                html += `<h4 class="md-h4">${parseInlineMarkdown(line.substring(5))}</h4>`;
+            } else if (line.startsWith('##### ')) {
+                html += `<h5 class="md-h5">${parseInlineMarkdown(line.substring(6))}</h5>`;
+            } else if (line.startsWith('###### ')) {
+                html += `<h6 class="md-h6">${parseInlineMarkdown(line.substring(7))}</h6>`;
+            } else if (line.startsWith('> ')) {
+                html += `<blockquote class="md-blockquote">${parseInlineMarkdown(line.substring(2))}</blockquote>`;
+            } else {
+                html += `<p class="md-p">${parseInlineMarkdown(line)}</p>`;
+            }
         }
     });
+
+    // Close any remaining open lists
+    while (listStack.length > 0) {
+        html += '</' + listStack.pop() + '>';
+    }
 
     return html;
 }
@@ -61,9 +109,3 @@ function parseInlineMarkdown(text) {
     text = text.replace(/~~(.+?)~~/g, '<del>$1</del>');
     return text;
 }
-
-////////////////////////////
-//////// Mistral IA ////////
-////////////////////////////
-///// Lasertie Zyglonk /////
-////////////////////////////
